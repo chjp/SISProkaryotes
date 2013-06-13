@@ -1,0 +1,5 @@
+Usage: Please download and install BLAST old version from http://mirrors.vbi.vt.edu/mirrors/ftp.ncbi.nih.gov/blast/executables/release/2.2.23/. New version supporting latest BLAST will be developed. 
+Software dependency: running of SISP.pl, which is the main script, needs to read information in Hierarchy.db, RS.tab and run the code in Blast_filter.pl. Therefore, after you download this code repository, please unpack the scripts and keep them under the same filefolder. 
+Second, download the prokaryotic sequence file from https://www.dropbox.com/sh/pourjd2bo8hr9v9/YE2qdN0IqC, and extract all strain folders to Bacteria/strainX, and put the Bacteria folder under the folder you put the above metioned code scripts.
+
+Any bugs, questions and advices are appreciated, and can be sent to kevinchjp@gmail.com
