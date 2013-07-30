@@ -3,8 +3,8 @@
 =head1 Name
 
     SISP.pl
-    Version: 0.1
-    Date: June.7 2013
+    Version: 0.3
+    Date: July.30 2013
     Contact: kevinchjp@gmail.com
 
 =head1 Description
@@ -13,12 +13,16 @@
 
 =head1 Usage
 
-    perl SISP.pl -bl blastn -fd formatdb -gn genome -od output directory
+    perl SISP.pl -bl blastall -fd formatdb -gn genome -od output directory
     Arguments explained
-    bl: Directory of blastn excecutable file
+    bl: Directory of blastall excecutable file
     fd: Directory of BLAST formatdb excecutable file
     gn: genome sequence file in FASTA format for query strain
     od: output directory
+
+=head1 Example
+
+    perl SISP.pl -bl ./blast-2.2.23/bin/blastall -fd ./blast-2.2.23/bin/formatdb -gn query_strain.fa -od result
 
 =cut
 
@@ -36,7 +40,7 @@ GetOptions(
 
 die `pod2text $0` unless $bl && $fd && $gn && $od;
 
-#split query genome to speed up BLAST alignment
+#split query genome to mimic DDH
 my $queryGsize; my $chop_len = 1020;
 unless(-d $od){`mkdir $od`;}
 $/ = "\n>";
@@ -49,6 +53,7 @@ while(<SR>){
     my ($scaf,$seq) = split /\n/,$_,2;
     my $scaf_name = (split /\s+/,$scaf)[0];
     $seq =~ s/\s+//g;
+    $seq =~ s/n//gi;
     my $seq_len = length($seq);
     $queryGsize += $seq_len;
     my @cut=($seq =~ /(.{1,$chop_len})/g);
@@ -115,7 +120,7 @@ foreach my $flg (keys %system){ #$flg:first level groups ID
     }
 }
 
-print "Maximum TNI strain: $maxStr\nTNI: $maxTni\n";
+print "Query Strain: $gn\nMaximum TNI strain: $maxStr\nTNI: $maxTni\n";
 #subrouting to update max TNI and strain report
 sub Max{
     my ($tni,$str) = @_;
@@ -132,25 +137,35 @@ sub TNI{
     $/ = "\n>";
     my ($tagGsize,$small_size); #tagGsize: genome size for target strain (db strain); small_size: smaller size of query and target
     open SR,"$od/s$n.fa" or die "s$n.fa $!\n";
-    open SL,">$od/s$n.len";
     while(<SR>){
         chomp;
         s/>//g;
         my ($scaf,$seq) = split /\n/,$_,2;
         my $scaf_name = (split /\s+/,$scaf)[0];
         $seq =~ s/\s+//g;
+        $seq =~ s/n//gi;
         my $seq_len = length($seq);
         $tagGsize += $seq_len;
-        print SL "$scaf_name\t$seq_len\n";
     }
     $/ = "\n";
-    close SR;close SL;
+    close SR;
     if($queryGsize > $tagGsize){
         $small_size = $tagGsize;
-    }
-    else{$small_size = $queryGsize;}
+    }else{$small_size = $queryGsize;}
     `$bl -i $od/ref.split -d $od/s$n.fa -X 150 -q -1 -F F -e 1e-15 -m 8 -a 2 -o $od/s$n.blast -p blastn`;
-    my $index = `$Bin/Blast_filter.pl $small_size $od/s$n.blast $od/s$n.len $od/ref.split.len`;
-    `rm $od/s$n.fa* $od/s$n.blast $od/s$n.len`;
-    return $index;
+    open BL, "<$od/s$n.blast" or die "$!\n";
+	my $id_cut = 30; my $cvg_cut = 70; my (%qr_best,$TNI);
+	while(<BL>){
+		chomp;
+	    my @t = split /\s+/,$_;
+        next if $t[3] < 100;
+        next if exists $qr_best{$t[0]}; 
+        next if $t[2]<=$id_cut;
+        next if ($t[3]*100/1020) < $cvg_cut;
+        $qr_best{$t[0]} = 1;
+        $TNI += $t[2]*$t[3];
+	}
+    $TNI = $TNI/$small_size;
+    `rm $od/s$n.fa* $od/s$n.blast `;
+    return $TNI;
 }
