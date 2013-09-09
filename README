@@ -5,6 +5,6 @@ Usage:
 
 2) Running of SISP.pl needs to read information in Hierarchy.db, RS.tab by using their relative directory. Therefore, after you download this repository, please unpack the files and keep them under the same folder. 
 
-3) This system archives complete and unfinished genome sequences of 3073 strains, which is packed in Bacteria.tar.gz. Please download the Bacteria.tar.gz by using the link https://www.dropbox.com/sh/pourjd2bo8hr9v9/YE2qdN0IqC, and decompress the Bacteria.tar.gz package. Put the extracted Bacteria folder under the directory where you put the above metioned scripts.
+3) This system archives complete and unfinished genome sequences of 3073 strains, which is packed in Bacteria.tar.gz. Please download the Bacteria.tar.gz by using the link https://drive.google.com/folderview?id=0B-uWVOCwqK3geTQ3MlAzaXdQN1E&usp=sharing, and decompress the Bacteria.tar.gz package. Put the extracted Bacteria folder under the directory where you put the above metioned scripts.
 
 Contact: Jiapeng Chen (kevinchjp@gmail.com)
