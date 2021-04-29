@@ -1,6 +1,6 @@
 This repository is for the algorithm TNI and database SISP that have been published in the journal Infectious Disease and Translational Medicine. The paper is available at https://www.researchgate.net/publication/308741076_SISP_a_Fast_Species_Identification_System_for_Prokaryotes_Based_on_Total_Nucleotide_Identity_of_Whole_Genome_Sequences. Main program is SISP.pl, which is writen in perl language and run under Linux operating system.
  
-Usage: 
+Usage
 1) SISP.pl call BLAST to do preprocessing. Please download and install BLAST old version from http://mirrors.vbi.vt.edu/mirrors/ftp.ncbi.nih.gov/blast/executables/release/2.2.23/. Support for newer BLAST will be updated. 
 
 2) Running of SISP.pl needs to read information in Hierarchy.db, RS.tab by using their relative directory. Therefore, after you download this repository, please unpack the files and keep them under the same folder. 
